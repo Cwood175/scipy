@@ -266,7 +266,7 @@ def linear_sum_assignment_assertions(
                            cost_matrix[row_ind, col_ind])).flatten())
 
 
-linear_sum_assignment_test_cases = product(
+linear_sum_assignment_test_cases = list(product(
     [-1, 1],
     [
         # Square

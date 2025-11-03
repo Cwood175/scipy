@@ -1,41 +1,78 @@
-""" Test functions involving 64bit or 32bit indexing """
-import pytest
+"""Test functions involving 64bit or 32bit indexing"""
+
 import numpy as np
+import pytest
+
 from scipy.sparse import (
-    bsr_array, coo_array, csc_array, csr_array, dia_array,
-    bsr_matrix, coo_matrix, csc_matrix, csr_matrix, dia_matrix,
+    bsr_array,
+    bsr_matrix,
+    coo_array,
+    coo_matrix,
+    csc_array,
+    csc_matrix,
+    csr_array,
+    csr_matrix,
+    dia_array,
+    dia_matrix,
 )
 
 # rename to avoid pytest collecting them in this module
 from .test_base import (
     TestBSR as _TestBSR,
-    TestCOO as _TestCOO,
-    TestCSC as _TestCSC,
-    TestCSR as _TestCSR,
-    TestDIA as _TestDIA,
-    TestDOK as _TestDOK,
-    TestLIL as _TestLIL,
+)
+from .test_base import (
     TestBSRMatrix as _TestBSRMatrix,
+)
+from .test_base import (
+    TestCOO as _TestCOO,
+)
+from .test_base import (
     TestCOOMatrix as _TestCOOMatrix,
+)
+from .test_base import (
+    TestCSC as _TestCSC,
+)
+from .test_base import (
     TestCSCMatrix as _TestCSCMatrix,
+)
+from .test_base import (
+    TestCSR as _TestCSR,
+)
+from .test_base import (
     TestCSRMatrix as _TestCSRMatrix,
+)
+from .test_base import (
+    TestDIA as _TestDIA,
+)
+from .test_base import (
     TestDIAMatrix as _TestDIAMatrix,
+)
+from .test_base import (
+    TestDOK as _TestDOK,
+)
+from .test_base import (
     TestDOKMatrix as _TestDOKMatrix,
+)
+from .test_base import (
+    TestLIL as _TestLIL,
+)
+from .test_base import (
     TestLILMatrix as _TestLILMatrix,
+)
+from .test_base import (
     with_64bit_maxval_limit,
 )
 
-
 # name : reason not tested here
 SKIP_TESTS = {
-    'test_expm': 'expm for 64-bit indices not available',
-    'test_inv': 'linsolve for 64-bit indices not available',
-    'test_solve': 'linsolve for 64-bit indices not available',
-    'test_scalar_idx_dtype': 'test implemented in base class',
-    'test_large_dimensions_reshape': 'test actually requires 64-bit to work',
-    'test_constructor_smallcol': 'test verifies int32 indexes',
-    'test_constructor_largecol': 'test verifies int64 indexes',
-    'test_tocoo_tocsr_tocsc_gh19245': 'test verifies int32 indexes',
+    "test_expm": "expm for 64-bit indices not available",
+    "test_inv": "linsolve for 64-bit indices not available",
+    "test_solve": "linsolve for 64-bit indices not available",
+    "test_scalar_idx_dtype": "test implemented in base class",
+    "test_large_dimensions_reshape": "test actually requires 64-bit to work",
+    "test_constructor_smallcol": "test verifies int32 indexes",
+    "test_constructor_largecol": "test verifies int64 indexes",
+    "test_tocoo_tocsr_tocsc_gh19245": "test verifies int32 indexes",
 }
 
 
@@ -57,8 +94,13 @@ def cases_64bit(sp_api):
         # these tests are superfluous, but it's hard to pick which
         TEST_CLASSES = [_TestDOK, _TestLIL]
     elif sp_api == "spmatrix":
-        TEST_CLASSES = [_TestBSRMatrix, _TestCOOMatrix, _TestCSCMatrix,
-                        _TestCSRMatrix, _TestDIAMatrix]
+        TEST_CLASSES = [
+            _TestBSRMatrix,
+            _TestCOOMatrix,
+            _TestCSCMatrix,
+            _TestCSRMatrix,
+            _TestDIAMatrix,
+        ]
     elif sp_api == "spmatrix-extra":
         # lil/dok->other conversion operations use get_index_dtype
         TEST_CLASSES = [_TestDOKMatrix, _TestLILMatrix]
@@ -68,17 +110,16 @@ def cases_64bit(sp_api):
     for cls in TEST_CLASSES:
         for method_name in sorted(dir(cls)):
             method = getattr(cls, method_name)
-            if (method_name.startswith('test_') and
-                    not getattr(method, 'slow', False)):
+            if method_name.startswith("test_") and not getattr(method, "slow", False):
                 marks = []
 
                 msg = SKIP_TESTS.get(method_name)
                 if msg:
                     marks.append(pytest.mark.skip(reason=msg))
 
-                markers = getattr(method, 'pytestmark', [])
+                markers = getattr(method, "pytestmark", [])
                 for mark in markers:
-                    if mark.name in ('skipif', 'skip', 'xfail', 'xslow'):
+                    if mark.name in ("skipif", "skip", "xfail", "xslow"):
                         marks.append(mark)
 
                 yield pytest.param(cls, method_name, marks=marks)
@@ -93,12 +134,12 @@ class RunAll64Bit:
         @with_64bit_maxval_limit(**kw)
         def check(cls, method_name):
             instance = cls()
-            if hasattr(instance, 'setup_method'):
+            if hasattr(instance, "setup_method"):
                 instance.setup_method()
             try:
                 getattr(instance, method_name)()
             finally:
-                if hasattr(instance, 'teardown_method'):
+                if hasattr(instance, "teardown_method"):
                     instance.teardown_method()
 
         check(cls, method_name)
@@ -107,20 +148,20 @@ class RunAll64Bit:
 class Test64BitArray(RunAll64Bit):
     # inheritance of pytest test classes does not separate marks for subclasses.
     # So we define these functions in both Array and Matrix versions.
-    @pytest.mark.parametrize('cls,method_name', cases_64bit("sparray"))
+    @pytest.mark.parametrize("cls,method_name", cases_64bit("sparray"))
     def test_resiliency_limit_10(self, cls, method_name):
         self._check_resiliency(cls, method_name, maxval_limit=10)
 
-    @pytest.mark.parametrize('cls,method_name', cases_64bit("sparray"))
+    @pytest.mark.parametrize("cls,method_name", cases_64bit("sparray"))
     def test_resiliency_all_32(self, cls, method_name):
         self._check_resiliency(cls, method_name, fixed_dtype=np.int32)
 
-    @pytest.mark.parametrize('cls,method_name', cases_64bit("sparray"))
+    @pytest.mark.parametrize("cls,method_name", cases_64bit("sparray"))
     def test_resiliency_all_64(self, cls, method_name):
         self._check_resiliency(cls, method_name, fixed_dtype=np.int64)
 
     @pytest.mark.fail_slow(2)
-    @pytest.mark.parametrize('cls,method_name', cases_64bit("sparray"))
+    @pytest.mark.parametrize("cls,method_name", cases_64bit("sparray"))
     def test_resiliency_random(self, cls, method_name):
         self._check_resiliency(cls, method_name)
 
@@ -128,7 +169,7 @@ class Test64BitArray(RunAll64Bit):
 class Test64BitMatrix(RunAll64Bit):
     # assert_32bit=True only for spmatrix cuz sparray does not check index content
     @pytest.mark.fail_slow(5)
-    @pytest.mark.parametrize('cls,method_name', cases_64bit("spmatrix"))
+    @pytest.mark.parametrize("cls,method_name", list(cases_64bit("spmatrix")))
     def test_no_64(self, cls, method_name):
         self._check_resiliency(cls, method_name, assert_32bit=True)
 
@@ -136,43 +177,44 @@ class Test64BitMatrix(RunAll64Bit):
 class Test64BitMatrixSameAsArray(RunAll64Bit):
     # inheritance of pytest test classes does not separate marks for subclasses.
     # So we define these functions in both Array and Matrix versions.
-    @pytest.mark.parametrize('cls,method_name', cases_64bit("spmatrix"))
+    @pytest.mark.parametrize("cls,method_name", list(cases_64bit("spmatrix")))
     def test_resiliency_limit_10(self, cls, method_name):
         self._check_resiliency(cls, method_name, maxval_limit=10)
 
-    @pytest.mark.parametrize('cls,method_name', cases_64bit("spmatrix"))
+    @pytest.mark.parametrize("cls,method_name", list(cases_64bit("spmatrix")))
     def test_resiliency_all_32(self, cls, method_name):
         self._check_resiliency(cls, method_name, fixed_dtype=np.int32)
 
-    @pytest.mark.parametrize('cls,method_name', cases_64bit("spmatrix"))
+    @pytest.mark.parametrize("cls,method_name", list(cases_64bit("spmatrix")))
     def test_resiliency_all_64(self, cls, method_name):
         self._check_resiliency(cls, method_name, fixed_dtype=np.int64)
 
     @pytest.mark.fail_slow(2)
-    @pytest.mark.parametrize('cls,method_name', cases_64bit("spmatrix"))
+    @pytest.mark.parametrize("cls,method_name", list(cases_64bit("spmatrix")))
     def test_resiliency_random(self, cls, method_name):
         # Resiliency check that sparse deals with varying index data types.
         self._check_resiliency(cls, method_name)
+
 
 # Extra: LIL and DOK classes. no direct get_index_dtype, but convert to classes that do
 @pytest.mark.xslow
 class Test64BitArrayExtra(RunAll64Bit):
     # inheritance of pytest test classes does not separate marks for subclasses.
     # So we define these functions in both Array and Matrix versions.
-    @pytest.mark.parametrize('cls,method_name', cases_64bit("sparray-extra"))
+    @pytest.mark.parametrize("cls,method_name", list(cases_64bit("sparray-extra")))
     def test_resiliency_limit_10(self, cls, method_name):
         self._check_resiliency(cls, method_name, maxval_limit=10)
 
-    @pytest.mark.parametrize('cls,method_name', cases_64bit("sparray-extra"))
+    @pytest.mark.parametrize("cls,method_name", list(cases_64bit("sparray-extra")))
     def test_resiliency_all_32(self, cls, method_name):
         self._check_resiliency(cls, method_name, fixed_dtype=np.int32)
 
-    @pytest.mark.parametrize('cls,method_name', cases_64bit("sparray-extra"))
+    @pytest.mark.parametrize("cls,method_name", list(cases_64bit("sparray-extra")))
     def test_resiliency_all_64(self, cls, method_name):
         self._check_resiliency(cls, method_name, fixed_dtype=np.int64)
 
     @pytest.mark.fail_slow(2)
-    @pytest.mark.parametrize('cls,method_name', cases_64bit("sparray-extra"))
+    @pytest.mark.parametrize("cls,method_name", list(cases_64bit("sparray-extra")))
     def test_resiliency_random(self, cls, method_name):
         # Resiliency check that sparse deals with varying index data types.
         self._check_resiliency(cls, method_name)
@@ -183,26 +225,26 @@ class Test64BitArrayExtra(RunAll64Bit):
 class Test64BitMatrixExtra(RunAll64Bit):
     # assert_32bit=True only for spmatrix cuz sparray does not check index content
     @pytest.mark.fail_slow(5)
-    @pytest.mark.parametrize('cls,method_name', cases_64bit("spmatrix-extra"))
+    @pytest.mark.parametrize("cls,method_name", list(cases_64bit("spmatrix-extra")))
     def test_no_64(self, cls, method_name):
         self._check_resiliency(cls, method_name, assert_32bit=True)
 
     # inheritance of pytest test classes does not separate marks for subclasses.
     # So we define these functions in both Array and Matrix versions.
-    @pytest.mark.parametrize('cls,method_name', cases_64bit("spmatrix-extra"))
+    @pytest.mark.parametrize("cls,method_name", list(cases_64bit("spmatrix-extra")))
     def test_resiliency_limit_10(self, cls, method_name):
         self._check_resiliency(cls, method_name, maxval_limit=10)
 
-    @pytest.mark.parametrize('cls,method_name', cases_64bit("spmatrix-extra"))
+    @pytest.mark.parametrize("cls,method_name", list(cases_64bit("spmatrix-extra")))
     def test_resiliency_all_32(self, cls, method_name):
         self._check_resiliency(cls, method_name, fixed_dtype=np.int32)
 
-    @pytest.mark.parametrize('cls,method_name', cases_64bit("spmatrix-extra"))
+    @pytest.mark.parametrize("cls,method_name", list(cases_64bit("spmatrix-extra")))
     def test_resiliency_all_64(self, cls, method_name):
         self._check_resiliency(cls, method_name, fixed_dtype=np.int64)
 
     @pytest.mark.fail_slow(2)
-    @pytest.mark.parametrize('cls,method_name', cases_64bit("spmatrix-extra"))
+    @pytest.mark.parametrize("cls,method_name", list(cases_64bit("spmatrix-extra")))
     def test_resiliency_random(self, cls, method_name):
         # Resiliency check that sparse deals with varying index data types.
         self._check_resiliency(cls, method_name)
@@ -212,18 +254,26 @@ class Test64BitMatrixExtra(RunAll64Bit):
 class Test64BitTools:
     # classes that use get_index_dtype
     MAT_CLASSES = [
-        bsr_matrix, coo_matrix, csc_matrix, csr_matrix, dia_matrix,
-        bsr_array, coo_array, csc_array, csr_array, dia_array,
+        bsr_matrix,
+        coo_matrix,
+        csc_matrix,
+        csr_matrix,
+        dia_matrix,
+        bsr_array,
+        coo_array,
+        csc_array,
+        csr_array,
+        dia_array,
     ]
 
     def _compare_index_dtype(self, m, dtype):
         dtype = np.dtype(dtype)
-        if m.format in ['csc', 'csr', 'bsr']:
+        if m.format in ["csc", "csr", "bsr"]:
             return (m.indices.dtype == dtype) and (m.indptr.dtype == dtype)
-        elif m.format == 'coo':
+        elif m.format == "coo":
             return (m.row.dtype == dtype) and (m.col.dtype == dtype)
-        elif m.format == 'dia':
-            return (m.offsets.dtype == dtype)
+        elif m.format == "dia":
+            return m.offsets.dtype == dtype
         else:
             raise ValueError(f"matrix {m!r} has no integer indices")
 
