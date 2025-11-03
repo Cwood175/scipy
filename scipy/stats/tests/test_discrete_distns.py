@@ -147,7 +147,7 @@ def test_betabinom_a_and_b_unity():
     assert_almost_equal(p, expected)
 
 
-@pytest.mark.parametrize('dtypes', itertools.product(*[(int, float)]*3))
+@pytest.mark.parametrize('dtypes', list(itertools.product(*[(int, float)]*3)))
 def test_betabinom_stats_a_and_b_integers_gh18026(dtypes):
     # gh-18026 reported that `betabinom` kurtosis calculation fails when some
     # parameters are integers. Check that this is resolved.
@@ -607,8 +607,8 @@ class TestNCH:
 
 
 @pytest.mark.parametrize("mu, q, expected",
-                         [[10, 120, -1.240089881791596e-38],
-                          [1500, 0, -86.61466680572661]])
+                         ((10, 120, -1.240089881791596e-38),
+                          (1500, 0, -86.61466680572661)))
 def test_nbinom_11465(mu, q, expected):
     # test nbinom.logcdf at extreme tails
     size = 20
@@ -633,9 +633,9 @@ def test_gh_17146():
 
 class TestBetaNBinom:
     @pytest.mark.parametrize('x, n, a, b, ref',
-                            [[5, 5e6, 5, 20, 1.1520944824139114e-107],
-                            [100, 50, 5, 20, 0.002855762954310226],
-                            [10000, 1000, 5, 20, 1.9648515726019154e-05]])
+                            ((5, 5e6, 5, 20, 1.1520944824139114e-107),
+                            (100, 50, 5, 20, 0.002855762954310226),
+                            (10000, 1000, 5, 20, 1.9648515726019154e-05)))
     def test_betanbinom_pmf(self, x, n, a, b, ref):
         # test that PMF stays accurate in the distribution tails
         # reference values computed with mpmath
@@ -652,9 +652,9 @@ class TestBetaNBinom:
 
 
     @pytest.mark.parametrize('n, a, b, ref',
-                            [[10000, 5000, 50, 0.12841520515722202],
-                            [10, 9, 9, 7.9224400871459695],
-                            [100, 1000, 10, 1.5849602176622748]])
+                            ((10000, 5000, 50, 0.12841520515722202),
+                            (10, 9, 9, 7.9224400871459695),
+                            (100, 1000, 10, 1.5849602176622748)))
     def test_betanbinom_kurtosis(self, n, a, b, ref):
         # reference values were computed via mpmath
         # from mpmath import mp

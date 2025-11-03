@@ -38,6 +38,9 @@ def cases_test_discrete_basic():
         seen.add(distname)
 
 
+cases_test_discrete_basic = list(cases_test_discrete_basic())
+
+
 @pytest.mark.parametrize('distname,arg,first_case', cases_test_discrete_basic())
 def test_discrete_basic(distname, arg, first_case, num_parallel_threads):
     if (isinstance(distname, str) and distname.startswith('nchypergeom')

@@ -118,7 +118,7 @@ def cases_test_cont_basic():
         elif distname in xslow_test_cont_basic:
             yield pytest.param(distname, arg, marks=pytest.mark.xslow)
         else:
-            yield distname, arg
+            yield pytest.param(distname, arg)
 
 
 @pytest.mark.parametrize('distname,arg', cases_test_cont_basic())
@@ -273,7 +273,7 @@ def test_cont_basic_fit(distname, arg, n_fit_samples, method, fix_args):
     else:
         check_fit_args(distfn, arg, rvs, method)
 
-@pytest.mark.parametrize('distname,arg', cases_test_cont_basic())
+@pytest.mark.parametrize('distname,arg', list(cases_test_cont_basic()))
 def test_rvs_scalar(distname, arg):
     # rvs should return a scalar when given scalar arguments (gh-12428)
     try:
@@ -335,7 +335,7 @@ def cases_test_moments():
 @pytest.mark.slow
 @pytest.mark.parametrize('distname,arg,normalization_ok,higher_ok,moment_ok,'
                          'is_xfailing',
-                         cases_test_moments())
+                         list(cases_test_moments()))
 def test_moments(distname, arg, normalization_ok, higher_ok, moment_ok,
                  is_xfailing):
     try:

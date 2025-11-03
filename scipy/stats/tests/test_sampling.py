@@ -153,9 +153,9 @@ nan_domains = [
 # all the methods should throw errors for nan, bad sized, and bad valued
 # domains.
 @pytest.mark.parametrize("domain, err, msg",
-                         bad_domains + bad_sized_domains +
-                         nan_domains)  # type: ignore[operator]
-@pytest.mark.parametrize("method, kwargs", all_methods)
+                         list(bad_domains + bad_sized_domains +
+                         nan_domains))  # type: ignore[operator]
+@pytest.mark.parametrize("method, kwargs", tuple(all_methods))
 def test_bad_domain(domain, err, msg, method, kwargs):
     Method = getattr(stats.sampling, method)
     with pytest.raises(err, match=msg):
@@ -504,7 +504,7 @@ class TestTransformedDensityRejection:
     mvs = [mv0, mv1, mv2, mv3]
 
     @pytest.mark.parametrize("dist, mv_ex",
-                             zip(dists, mvs))
+                             list(zip(dists, mvs)))
     @pytest.mark.thread_unsafe(reason="deadlocks for unknown reasons")
     def test_basic(self, dist, mv_ex):
         with warnings.catch_warnings():
@@ -537,7 +537,7 @@ class TestTransformedDensityRejection:
 
     # test domains with inf + nan in them. need to write a custom test for
     # this because not all methods support infinite tails.
-    @pytest.mark.parametrize("domain, err, msg", inf_nan_domains)
+    @pytest.mark.parametrize("domain, err, msg", list(inf_nan_domains))
     def test_inf_nan_domains(self, domain, err, msg):
         with pytest.raises(err, match=msg):
             TransformedDensityRejection(StandardNormal(), domain=domain)
@@ -642,7 +642,7 @@ class TestDiscreteAliasUrn:
         'randint'  # fails on 32-bit ubuntu
     }
 
-    @pytest.mark.parametrize("distname, params", distdiscrete)
+    @pytest.mark.parametrize("distname, params", list(distdiscrete))
     def test_basic(self, distname, params):
         if distname in self.basic_fail_dists:
             msg = ("DAU fails on these probably because of large domains "
@@ -712,7 +712,7 @@ class TestDiscreteAliasUrn:
         mv_expected = m_expected, v_expected
         check_discr_samples(rng, pv, mv_expected)
 
-    @pytest.mark.parametrize("pv, msg", bad_pv_common)
+    @pytest.mark.parametrize("pv, msg", list(bad_pv_common))
     def test_bad_pv(self, pv, msg):
         with pytest.raises(ValueError, match=msg):
             DiscreteAliasUrn(pv)
@@ -722,7 +722,7 @@ class TestDiscreteAliasUrn:
     inf_domain = [(-np.inf, np.inf), (np.inf, np.inf), (-np.inf, -np.inf),
                   (0, np.inf), (-np.inf, 0)]
 
-    @pytest.mark.parametrize("domain", inf_domain)
+    @pytest.mark.parametrize("domain", list(inf_domain))
     def test_inf_domain(self, domain):
         with pytest.raises(ValueError, match=r"must be finite"):
             DiscreteAliasUrn(stats.binom(10, 0.2), domain=domain)
@@ -814,13 +814,13 @@ class TestNumericalInversePolynomial:
 
     @pytest.mark.thread_unsafe(reason="deadlocks for unknown reasons")
     @pytest.mark.parametrize("dist, mv_ex",
-                             zip(dists, mvs))
+                             list(zip(dists, mvs)))
     def test_basic(self, dist, mv_ex):
         rng = NumericalInversePolynomial(dist, random_state=42)
         check_cont_samples(rng, dist, mv_ex)
 
     @pytest.mark.xslow
-    @pytest.mark.parametrize("distname, params", distcont)
+    @pytest.mark.parametrize("distname, params", list(distcont))
     def test_basic_all_scipy_dists(self, distname, params):
 
         very_slow_dists = ['anglit', 'gausshyper', 'kappa4',
@@ -853,7 +853,7 @@ class TestNumericalInversePolynomial:
             return
         check_cont_samples(rng, dist, [dist.mean(), dist.var()])
 
-    @pytest.mark.parametrize("pdf, err, msg", bad_pdfs_common)
+    @pytest.mark.parametrize("pdf, err, msg", list(bad_pdfs_common))
     def test_bad_pdf(self, pdf, err, msg):
         class dist:
             pass
@@ -861,7 +861,7 @@ class TestNumericalInversePolynomial:
         with pytest.raises(err, match=msg):
             NumericalInversePolynomial(dist, domain=[0, 5])
 
-    @pytest.mark.parametrize("logpdf, err, msg", bad_logpdfs_common)
+    @pytest.mark.parametrize("logpdf, err, msg", list(bad_logpdfs_common))
     def test_bad_logpdf(self, logpdf, err, msg):
         class dist:
             pass
@@ -871,7 +871,7 @@ class TestNumericalInversePolynomial:
 
     # test domains with inf + nan in them. need to write a custom test for
     # this because not all methods support infinite tails.
-    @pytest.mark.parametrize("domain, err, msg", inf_nan_domains)
+    @pytest.mark.parametrize("domain, err, msg", list(inf_nan_domains))
     def test_inf_nan_domains(self, domain, err, msg):
         with pytest.raises(err, match=msg):
             NumericalInversePolynomial(StandardNormal(), domain=domain)
@@ -891,7 +891,7 @@ class TestNumericalInversePolynomial:
         [[np.nan, 0.5, 0.1], [0.2, 0.4, np.inf], [-2, 3, 4]]
     ]
 
-    @pytest.mark.parametrize("u", u)
+    @pytest.mark.parametrize("u", tuple(u))
     def test_ppf(self, u):
         dist = StandardNormal()
         rng = NumericalInversePolynomial(dist, u_resolution=1e-14)
@@ -912,7 +912,7 @@ class TestNumericalInversePolynomial:
          [-np.inf, np.nan, np.inf], 0,
          [[np.nan, 0.5, 0.1], [0.2, 0.4, np.inf], [-np.inf, 3, 4]]]
 
-    @pytest.mark.parametrize("x", x)
+    @pytest.mark.parametrize("x", tuple(x))
     def test_cdf(self, x):
         dist = StandardNormal()
         rng = NumericalInversePolynomial(dist, u_resolution=1e-14)
@@ -944,7 +944,7 @@ class TestNumericalInversePolynomial:
     bad_orders = [1, 4.5, 20, np.inf, np.nan]
     bad_u_resolution = [1e-20, 1e-1, np.inf, np.nan]
 
-    @pytest.mark.parametrize("order", bad_orders)
+    @pytest.mark.parametrize("order", list(bad_orders))
     def test_bad_orders(self, order):
         dist = StandardNormal()
 
@@ -952,7 +952,7 @@ class TestNumericalInversePolynomial:
         with pytest.raises(ValueError, match=msg):
             NumericalInversePolynomial(dist, order=order)
 
-    @pytest.mark.parametrize("u_resolution", bad_u_resolution)
+    @pytest.mark.parametrize("u_resolution", list(bad_u_resolution))
     def test_bad_u_resolution(self, u_resolution):
         msg = r"`u_resolution` must be between 1e-15 and 1e-5."
         with pytest.raises(ValueError, match=msg):
@@ -1065,7 +1065,7 @@ class TestNumericalInverseHermite:
     mvs = [mv0, mv1]
 
     @pytest.mark.parametrize("dist, mv_ex",
-                             zip(dists, mvs))
+                             list(zip(dists, mvs)))
     @pytest.mark.parametrize("order", [3, 5])
     @pytest.mark.thread_unsafe
     def test_basic(self, dist, mv_ex, order):
@@ -1106,7 +1106,7 @@ class TestNumericalInverseHermite:
 
     @pytest.mark.filterwarnings('ignore::RuntimeWarning')
     @pytest.mark.xslow
-    @pytest.mark.parametrize(("distname", "shapes"), distcont)
+    @pytest.mark.parametrize(("distname", "shapes"), list(distcont))
     def test_basic_all_scipy_dists(self, distname, shapes):
         # if distname == "truncnorm":
         #     pytest.skip("Tested separately")
@@ -1136,8 +1136,8 @@ class TestNumericalInverseHermite:
     rngs.append(np.random.default_rng(0))  # type: ignore
     sizes = [(None, tuple()), (8, (8,)), ((4, 5, 6), (4, 5, 6))]
 
-    @pytest.mark.parametrize('rng', rngs)
-    @pytest.mark.parametrize('size_in, size_out', sizes)
+    @pytest.mark.parametrize('rng', list(rngs))
+    @pytest.mark.parametrize('size_in, size_out', list(sizes))
     @pytest.mark.thread_unsafe
     def test_RVS(self, rng, size_in, size_out):
         dist = StandardNormal()
@@ -1192,7 +1192,7 @@ class TestNumericalInverseHermite:
         [[np.nan, 0.5, 0.1], [0.2, 0.4, np.inf], [-2, 3, 4]]
     ]
 
-    @pytest.mark.parametrize("u", u)
+    @pytest.mark.parametrize("u", tuple(u))
     def test_ppf(self, u):
         dist = StandardNormal()
         rng = NumericalInverseHermite(dist, u_resolution=1e-12)
@@ -1253,7 +1253,7 @@ class TestDiscreteGuideTable:
         with pytest.warns(RuntimeWarning):
             DiscreteGuideTable(pv, random_state=urng, guide_factor=-1)
 
-    @pytest.mark.parametrize("distname, params", distdiscrete)
+    @pytest.mark.parametrize("distname, params", list(distdiscrete))
     def test_basic(self, distname, params):
         if distname in self.basic_fail_dists:
             msg = ("DGT fails on these probably because of large domains "
@@ -1293,7 +1293,7 @@ class TestDiscreteGuideTable:
         [[np.nan, 0.5, 0.1], [0.2, 0.4, np.inf], [-2, 3, 4]]
     ]
 
-    @pytest.mark.parametrize('u', u)
+    @pytest.mark.parametrize('u', tuple(u))
     def test_ppf(self, u):
         n, p = 4, 0.1
         dist = stats.binom(n, p)
@@ -1357,7 +1357,7 @@ class TestSimpleRatioUniforms:
     mvs = [mv1, mv2]
 
     @pytest.mark.parametrize("dist, mv_ex",
-                             zip(dists, mvs))
+                             list(zip(dists, mvs)))
     @pytest.mark.thread_unsafe
     def test_basic(self, dist, mv_ex):
         rng = SimpleRatioUniforms(dist, mode=dist.mode, random_state=42)

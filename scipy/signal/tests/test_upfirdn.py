@@ -280,11 +280,13 @@ class TestUpfirdn:
 
     @pytest.mark.parametrize(
         'size, h_len, mode, dtype',
-        product(
-            [8],
-            [4, 5, 26],  # include cases with h_len > 2*size
-            _upfirdn_modes,
-            ["float32", "float64", "complex64", "complex128"],
+        list(
+            product(
+                [8],
+                [4, 5, 26],  # include cases with h_len > 2*size
+                _upfirdn_modes,
+                ["float32", "float64", "complex64", "complex128"],
+            )
         )
     )
     def test_modes(self, size, h_len, mode, dtype, xp):

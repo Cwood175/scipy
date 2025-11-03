@@ -197,7 +197,7 @@ class TestShapiro:
         assert_almost_equal(pw, 0.52460, decimal=3)
         assert_almost_equal(shapiro_test.pvalue, 0.52460, decimal=3)
 
-    @pytest.mark.parametrize('x', ([], [1], [1, 2]))
+    @pytest.mark.parametrize('x', [([],), ([1],), ([1, 2],)])
     def test_not_enough_values(self, x):
         with pytest.warns(SmallSampleWarning, match=too_small_1d_not_omit):
             res = stats.shapiro(x)
@@ -218,13 +218,14 @@ class TestShapiro:
         assert_almost_equal(pw, np.nan)
         assert_almost_equal(shapiro_test.pvalue, np.nan)
 
-    def test_gh14462(self):
+    @pytest.mark.parametrize('trans_val', ([122500, 474400, 110400],))
+    def test_gh14462(self, trans_val):
         # shapiro is theoretically location-invariant, but when the magnitude
         # of the values is much greater than the variance, there can be
         # numerical issues. Fixed by subtracting median from the data.
         # See gh-14462.
 
-        trans_val, maxlog = stats.boxcox([122500, 474400, 110400])
+        trans_val, maxlog = stats.boxcox(trans_val)
         res = stats.shapiro(trans_val)
 
         # Reference from R:
@@ -1184,7 +1185,7 @@ def mood_cases_with_ties():
 
 class TestMood:
     @pytest.mark.parametrize("x,y,alternative,stat_expect,p_expect",
-                             mood_cases_with_ties())
+                             list(mood_cases_with_ties()))
     def test_against_SAS(self, x, y, alternative, stat_expect, p_expect):
         """
         Example code used to generate SAS output:
@@ -1644,9 +1645,9 @@ class TestWilcoxon:
     # even).  Also, the numbers are chosen so that the W statistic is the
     # sum of the positive values.
 
-    @pytest.mark.parametrize('x', [[-1, -2, 3],
-                                   [-1, 2, -3, -4, 5],
-                                   [-1, -2, 3, -4, -5, -6, 7, 8]])
+    @pytest.mark.parametrize('x', [(-1, -2, 3),
+                                   (-1, 2, -3, -4, 5),
+                                   (-1, -2, 3, -4, -5, -6, 7, 8)])
     def test_exact_p_1(self, x):
         w, p = stats.wilcoxon(x)
         x = np.array(x)
@@ -1735,7 +1736,7 @@ class TestWilcoxon:
         assert hasattr(ref, 'zstatistic')
         assert not hasattr(res, 'zstatistic')
 
-    @pytest.mark.parametrize('method', ['exact', 'asymptotic'])
+    @pytest.mark.parametrize('method', ('exact', 'asymptotic'))
     def test_symmetry_gh19872_gh20752(self, method):
         # Check that one-sided exact tests obey required symmetry. Bug reported
         # in gh-19872 and again in gh-20752; example from gh-19872 is more concise:
@@ -2257,8 +2258,8 @@ class TestBoxcoxNormmax:
         maxlog_all = stats.boxcox_normmax(self.x, method='all')
         assert_allclose(maxlog_all, [1.804465, 1.758101], rtol=1e-6)
 
-    @pytest.mark.parametrize("method", ["mle", "pearsonr", "all"])
-    @pytest.mark.parametrize("bounds", [(-1, 1), (1.1, 2), (-2, -1.1)])
+    @pytest.mark.parametrize("method", ("mle", "pearsonr", "all"))
+    @pytest.mark.parametrize("bounds", ((-1, 1), (1.1, 2), (-2, -1.1)))
     def test_bounded_optimizer_within_bounds(self, method, bounds):
 
         def optimizer(fun):
@@ -3030,7 +3031,7 @@ class TestMedianTest:
         assert_allclose(stat, exp_stat)
         assert_allclose(p, exp_p)
 
-    @pytest.mark.parametrize("correction", [False, True])
+    @pytest.mark.parametrize("correction", (False, True))
     def test_result(self, correction):
         x = [1, 2, 3]
         y = [1, 2, 3]

@@ -75,7 +75,7 @@ def test_generic_quat_matrix(xp):
     xp_assert_close(r.as_quat(), expected_quat)
 
 
-@pytest.mark.parametrize("ndim", range(1, 6))
+@pytest.mark.parametrize("ndim", list(range(1, 6)))
 def test_from_single_nd_quaternion(xp, ndim: int):
     x = xp.asarray([3.0, 4, 0, 0])
     x = xp.reshape(x, (1,) * (ndim - 1) + (4,))
@@ -915,7 +915,7 @@ def test_from_euler_scalar():
 
 
 @make_xp_test_case(Rotation.from_euler, Rotation.as_euler)
-@pytest.mark.parametrize("seq_tuple", permutations("xyz"))
+@pytest.mark.parametrize("seq_tuple", list(permutations("xyz")))
 @pytest.mark.parametrize("intrinsic", (False, True))
 def test_as_euler_asymmetric_axes(xp, seq_tuple, intrinsic):
     # helper function for mean error tests
@@ -946,7 +946,7 @@ def test_as_euler_asymmetric_axes(xp, seq_tuple, intrinsic):
 
 
 @make_xp_test_case(Rotation.from_euler, Rotation.as_euler)
-@pytest.mark.parametrize("seq_tuple", permutations("xyz"))
+@pytest.mark.parametrize("seq_tuple", list(permutations("xyz")))
 @pytest.mark.parametrize("intrinsic", (False, True))
 def test_as_euler_symmetric_axes(xp, seq_tuple, intrinsic):
     # helper function for mean error tests
@@ -1059,7 +1059,7 @@ def test_as_euler_degenerate_symmetric_axes(
 
 
 @make_xp_test_case(Rotation.from_euler, Rotation.as_euler)
-@pytest.mark.parametrize("ndim", range(1, 4))
+@pytest.mark.parametrize("ndim", list(range(1, 4)))
 def test_as_euler_nd_rotation(xp, ndim: int):
     mat = xp.asarray([
         [0.0, -1, 0],
@@ -1259,7 +1259,7 @@ def test_approx_equal_single_rotation(xp):
         assert p.approx_equal(q[3], degrees=True)
 
 
-@make_xp_test_case(Rotation.inv, Rotation.magnitude, Rotation.approx_equal)
+@make_xp_test_case(list((Rotation.inv, Rotation.magnitude, Rotation.approx_equal)))
 def test_approx_equal_batched(xp):
     # Same shapes
     batch_shape = (2, 10, 3)
@@ -1295,7 +1295,7 @@ def test_approx_equal_batched(xp):
     xp_assert_equal(p.approx_equal(q, atol), (xp.asarray(r_mag) < atol))
 
 
-@make_xp_test_case(Rotation.approx_equal)
+@make_xp_test_case(list((Rotation.approx_equal,)))
 def test_approx_equal_batched_input_validation(xp):
     p = Rotation.from_quat(xp.ones((2, 3, 4)))
     q = Rotation.from_quat(xp.ones((3, 2, 4)))
@@ -1308,8 +1308,8 @@ def test_approx_equal_batched_input_validation(xp):
         p.approx_equal(q)
 
 
-@make_xp_test_case(Rotation.from_rotvec, Rotation.mean, Rotation.magnitude)
-@pytest.mark.parametrize("ndim", range(1, 4))
+@make_xp_test_case(list((Rotation.from_rotvec, Rotation.mean, Rotation.magnitude)))
+@pytest.mark.parametrize("ndim", list(range(1, 4)))
 def test_mean(xp, ndim: int):
     axes = xp.concat((-xp.eye(3), xp.eye(3)))
     axes = xp.reshape(axes, (1,) * (ndim - 1) + (6, 3))
@@ -1322,8 +1322,8 @@ def test_mean(xp, ndim: int):
         xp_assert_close(r_mean.magnitude(), desired, atol=atol)
 
 
-@make_xp_test_case(Rotation.from_rotvec, Rotation.mean, Rotation.magnitude)
-@pytest.mark.parametrize("ndim", range(1, 5))
+@make_xp_test_case(list((Rotation.from_rotvec, Rotation.mean, Rotation.magnitude)))
+@pytest.mark.parametrize("ndim", list(range(1, 5)))
 def test_mean_axis(xp, ndim: int):
     axes = xp.tile(xp.concat((-xp.eye(3), xp.eye(3))), (3,) * (ndim - 1) + (1, 1))
     theta = xp.pi / 4
@@ -1344,7 +1344,7 @@ def test_mean_axis(xp, ndim: int):
                     atol=atol)
 
 
-@make_xp_test_case(Rotation.mean, Rotation.magnitude)
+@make_xp_test_case(list((Rotation.mean, Rotation.magnitude)))
 def test_mean_compare_axis(xp):
     # Create a random set of rotations and compare the mean over an axis with the
     # mean without axis of the sliced quaternion
@@ -1365,9 +1365,9 @@ def test_mean_compare_axis(xp):
                         xp.asarray(0.0)[()], atol=atol)
 
 
-@make_xp_test_case(Rotation.from_rotvec, Rotation.mean, Rotation.inv,
-                   Rotation.magnitude)
-@pytest.mark.parametrize("ndim", range(1, 4))
+@make_xp_test_case(list((Rotation.from_rotvec, Rotation.mean, Rotation.inv,
+                   Rotation.magnitude)))
+@pytest.mark.parametrize("ndim", list(range(1, 4)))
 def test_weighted_mean(xp, ndim: int):
     # test that doubling a weight is equivalent to including a rotation twice.
     thetas = xp.linspace(0, xp.pi / 2, 100)
@@ -1390,7 +1390,7 @@ def test_weighted_mean(xp, ndim: int):
         xp_assert_close((m * mw.inv()).magnitude(), expected, atol=1e-6)
 
 
-@make_xp_test_case(Rotation.mean)
+@make_xp_test_case(list((Rotation.mean,)))
 def test_mean_input_validation(xp):
     r = Rotation.from_quat(xp.eye(4))
     if is_lazy_array(r.as_quat()):
@@ -1419,14 +1419,14 @@ def test_mean_input_validation(xp):
         r.mean(axis=-12)
 
 
-@make_xp_test_case(Rotation.reduce)
+@make_xp_test_case(list((Rotation.reduce,)))
 def test_reduction_no_indices(xp):
     r = Rotation.from_quat(xp.asarray([0.0, 0.0, 0.0, 1.0]))
     result = r.reduce(return_indices=False)
     assert isinstance(result, Rotation)
 
 
-@make_xp_test_case(Rotation.reduce)
+@make_xp_test_case(list((Rotation.reduce,)))
 def test_reduction_none_indices(xp):
     r = Rotation.from_quat(xp.asarray([0.0, 0.0, 0.0, 1.0]))
     result = r.reduce(return_indices=True)
@@ -1438,7 +1438,7 @@ def test_reduction_none_indices(xp):
     assert right_best is None
 
 
-@make_xp_test_case(Rotation.reduce, Rotation.inv, Rotation.magnitude)
+@make_xp_test_case(list((Rotation.reduce, Rotation.inv, Rotation.magnitude)))
 def test_reduction_scalar_calculation(xp):
     dtype = xpx.default_dtype(xp)
     atol = 1e-12 if dtype == xp.float64 else 1e-6
@@ -1470,7 +1470,7 @@ def test_reduction_scalar_calculation(xp):
     xp_assert_close(mag, xp.zeros(len(p)), atol=atol)
 
 
-@make_xp_test_case(Rotation.from_matrix, Rotation.apply)
+@make_xp_test_case(list((Rotation.from_matrix, Rotation.apply)))
 def test_apply_single_rotation_single_point(xp):
     dtype = xpx.default_dtype(xp)
     mat = xp.asarray([
@@ -2430,7 +2430,7 @@ def test_multiplication_stability(xp):
 
 @make_xp_test_case(Rotation.inv, Rotation.__pow__, Rotation.inv, Rotation.magnitude,
                    Rotation.from_rotvec, Rotation.as_rotvec)
-@pytest.mark.parametrize("ndim", range(1, 4))
+@pytest.mark.parametrize("ndim", list(range(1, 4)))
 def test_pow(xp, ndim: int):
     dtype = xpx.default_dtype(xp)
     atol = 1e-14 if dtype == xp.float64 else 1e-6
@@ -2533,7 +2533,7 @@ def test_rotation_within_numpy_array():
 
 
 @make_xp_test_case(Rotation.as_matrix)
-@pytest.mark.skip_xp_backends("array_api_strict",
+@pytest.mark.skip_xp_backends(["array_api_strict"],
                               reason="array API doesn't support pickling")
 def test_pickling(xp):
     r = Rotation.from_quat(xp.asarray([0, 0, math.sin(np.pi/4), math.cos(np.pi/4)]))
@@ -2543,7 +2543,7 @@ def test_pickling(xp):
 
 
 @make_xp_test_case(Rotation.as_matrix)
-@pytest.mark.skip_xp_backends("array_api_strict",
+@pytest.mark.skip_xp_backends(["array_api_strict"],
                               reason="array API doesn't support deepcopy")
 def test_deepcopy(xp):
     r = Rotation.from_quat(xp.asarray([0, 0, math.sin(np.pi/4), math.cos(np.pi/4)]))

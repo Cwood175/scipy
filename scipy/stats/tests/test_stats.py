@@ -3768,8 +3768,8 @@ class TestSkew(SkewKurtosisTest):
             a[:, 0] = 1.01
             stats.skew(xp.asarray(a))
 
-    @pytest.mark.parametrize('axis', [-1, 0, 2, None])
-    @pytest.mark.parametrize('bias', [False, True])
+    @pytest.mark.parametrize('axis', (-1, 0, 2, None))
+    @pytest.mark.parametrize('bias', (False, True))
     def test_vectorization(self, xp, axis, bias):
         # Behavior with array input is barely tested above. Compare
         # against naive implementation.
@@ -3862,9 +3862,9 @@ class TestKurtosis(SkewKurtosisTest):
             assert xp.isnan(stats.kurtosis(a / float(2**50), fisher=False))
             assert xp.isnan(stats.kurtosis(a, fisher=False, bias=False))
 
-    @pytest.mark.parametrize('axis', [-1, 0, 2, None])
-    @pytest.mark.parametrize('bias', [False, True])
-    @pytest.mark.parametrize('fisher', [False, True])
+    @pytest.mark.parametrize('axis', (-1, 0, 2, None))
+    @pytest.mark.parametrize('bias', (False, True))
+    @pytest.mark.parametrize('fisher', (False, True))
     def test_vectorization(self, xp, axis, bias, fisher):
         # Behavior with array input is not tested above. Compare
         # against naive implementation.

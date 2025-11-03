@@ -758,7 +758,7 @@ tensordot_shapes_and_axes = [
     ((4,5,7), (7,3,7), 1),
     ((2,3,4), (2,3,4), ([0, 1, 2], [0, 1, 2])),
 ]
-@pytest.mark.parametrize(('a_shape', 'b_shape', 'axes'), tensordot_shapes_and_axes)
+@pytest.mark.parametrize(('a_shape', 'b_shape', 'axes'), list(tensordot_shapes_and_axes))
 def test_tensordot(a_shape, b_shape, axes):
     rng = np.random.default_rng(23409823)
 
@@ -804,7 +804,7 @@ def test_tensordot_with_invalid_args():
                          [((1,3,5,4), (2,3,5,4)), ((2,1,5,4), (6,2,3,5,4)),
                           ((1,1,7,8,9), (4,5,6,7,8,9)), ((1,3), (4,5,3)),
                           ((7,8,1), (7,8,5)), ((3,1), (3,4)), ((1,), (5,)),
-                          ((1,1,1), (4,5,6)), ((1,3,1,5,4), (8,2,3,9,5,4)),])
+                          ((1,1,1), (4,5,6)), ((1,3,1,5,4), (8,2,3,9,5,4))])
 def test_broadcast_to(actual_shape, broadcast_shape):
     rng = np.random.default_rng(23409823)
 
@@ -815,7 +815,7 @@ def test_broadcast_to(actual_shape, broadcast_shape):
 
 
 @pytest.mark.parametrize(('shape'), [(4,5,6,7,8), (6,4),
-                                     (5,9,3,2), (9,5,2,3,4),])
+                                     (5,9,3,2), (9,5,2,3,4)])
 def test_block_diag(shape):
     rng = np.random.default_rng(23409823)
     sp_x = random_array(shape, density=0.6, random_state=rng, dtype=int)
@@ -834,7 +834,7 @@ def test_block_diag(shape):
 
 
 @pytest.mark.parametrize(('shape'), [(4,5,6,7,8), (6,4),
-                                     (5,9,3,2), (9,5,2,3,4),])
+                                     (5,9,3,2), (9,5,2,3,4)])
 def test_extract_block_diag(shape):
     rng = np.random.default_rng(23409823)
     sp_x = random_array(shape, density=0.6, random_state=rng, dtype=int)
@@ -846,7 +846,7 @@ def test_extract_block_diag(shape):
 add_sub_shapes = [
     ((3,4), (3,4)), ((3,4,6), (3,4,6)), ((3,7,5), (3,7,5))
 ]
-@pytest.mark.parametrize(('a_shape', 'b_shape'), add_sub_shapes)
+@pytest.mark.parametrize(('a_shape', 'b_shape'), list(add_sub_shapes))
 def test_add_no_broadcasting(a_shape, b_shape):
     rng = np.random.default_rng(23409823)
     a = random_array(a_shape, density=0.6, random_state=rng, dtype=int)
@@ -859,7 +859,7 @@ def test_add_no_broadcasting(a_shape, b_shape):
     assert_equal(res, exp)
 
 
-@pytest.mark.parametrize(('a_shape', 'b_shape'), add_sub_shapes)
+@pytest.mark.parametrize(('a_shape', 'b_shape'), list(add_sub_shapes))
 def test_sub_no_broadcasting(a_shape, b_shape):
     rng = np.random.default_rng(23409823)
     a = random_array(a_shape, density=0.6, random_state=rng, dtype=int)
@@ -883,7 +883,7 @@ argmax_argmin_shapes_axis = [
 ]
 
 
-@pytest.mark.parametrize(('shape', 'axis'), argmax_argmin_shapes_axis)
+@pytest.mark.parametrize(('shape', 'axis'), list(argmax_argmin_shapes_axis))
 def test_argmax_argmin(shape, axis):
     rng = np.random.default_rng(23409823)
     a = random_array(shape, density=0.6, random_state=rng, dtype=int)
@@ -908,7 +908,7 @@ max_min_shapes_axis = [
     ((3,7,8,5), (0,-2)), ((3,7,8,5), (-1,2)), ((3,7,8,5), (3)),
     ((3,7,8,5), (0,1,2)), ((3,7,8,5), (0,1,2,3)),
 ]
-@pytest.mark.parametrize(('shape', 'axis'), max_min_shapes_axis)
+@pytest.mark.parametrize(('shape', 'axis'), list(max_min_shapes_axis))
 def test_min_max(shape, axis):
     rng = np.random.default_rng(23409823)
     a = random_array(shape, density=0.6, random_state=rng, dtype=int)
@@ -949,7 +949,7 @@ sum_mean_params = [
     ((3,7,8,5), (3), None), ((3,7,8,5), (0,1,2), np.zeros((5,))),
     ((3,7,8,5), (0,1,2,3), None),
 ]
-@pytest.mark.parametrize(('shape', 'axis', 'out'), sum_mean_params)
+@pytest.mark.parametrize(('shape', 'axis', 'out'), list(sum_mean_params))
 def test_sum(shape, axis, out):
     rng = np.random.default_rng(23409823)
     a = random_array(shape, density=0.6, random_state=rng, dtype=int)
@@ -962,7 +962,7 @@ def test_sum(shape, axis, out):
         assert id(res) == id(out)
 
 
-@pytest.mark.parametrize(('shape', 'axis', 'out'), sum_mean_params)
+@pytest.mark.parametrize(('shape', 'axis', 'out'), list(sum_mean_params))
 def test_mean(shape, axis, out):
     rng = np.random.default_rng(23409823)
     a = random_array(shape, density=0.6, random_state=rng, dtype=int)
@@ -1024,7 +1024,7 @@ def test_boolean_comparisons_with_scalar():
         assert_equal((a<0).toarray(), a.toarray()<0)
 
 
-@pytest.mark.parametrize(('a_shape', 'b_shape'), bitwise_op_and_compare_shapes)
+@pytest.mark.parametrize(('a_shape', 'b_shape'), list(bitwise_op_and_compare_shapes))
 def test_multiply(a_shape, b_shape):
     rng = np.random.default_rng(23409823)
     a = random_array(a_shape, density=0.6, random_state=rng, dtype=int)
@@ -1042,7 +1042,7 @@ def test_multiply_with_scalar():
     assert_equal(res.toarray(), exp)
 
 
-@pytest.mark.parametrize(('a_shape', 'b_shape'), bitwise_op_and_compare_shapes)
+@pytest.mark.parametrize(('a_shape', 'b_shape'), list(bitwise_op_and_compare_shapes))
 def test_divide(a_shape, b_shape):
     rng = np.random.default_rng(23409823)
     a = random_array(a_shape, density=0.6, random_state=rng, dtype=int)
@@ -1063,7 +1063,7 @@ def test_divide_with_scalar():
     assert_allclose(res.toarray(), exp)
 
 
-@pytest.mark.parametrize(('a_shape', 'b_shape'), bitwise_op_and_compare_shapes)
+@pytest.mark.parametrize(('a_shape', 'b_shape'), list(bitwise_op_and_compare_shapes))
 def test_maximum(a_shape, b_shape):
     rng = np.random.default_rng(23409823)
     a = random_array(a_shape, density=0.6, random_state=rng, dtype=int)
@@ -1075,7 +1075,7 @@ def test_maximum(a_shape, b_shape):
         assert_equal(res.toarray(), exp)
 
 
-@pytest.mark.parametrize(('a_shape', 'b_shape'), bitwise_op_and_compare_shapes)
+@pytest.mark.parametrize(('a_shape', 'b_shape'), list(bitwise_op_and_compare_shapes))
 def test_minimum(a_shape, b_shape):
     rng = np.random.default_rng(23409823)
     a = random_array(a_shape, density=0.6, random_state=rng, dtype=int)

@@ -1100,7 +1100,7 @@ class TestAttributes:
 
 
 class TestMakeDistribution:
-    @pytest.mark.parametrize('i, distdata', enumerate(distcont + distdiscrete))
+    @pytest.mark.parametrize('i, distdata', list(enumerate(distcont + distdiscrete)))
     def test_rv_generic(self, i, distdata):
         distname = distdata[0]
 
@@ -1275,7 +1275,7 @@ class TestMakeDistribution:
     # See https://github.com/scipy/scipy/pull/22560#discussion_r1962763840.
     @pytest.mark.slow
     @pytest.mark.filterwarnings("ignore::RuntimeWarning")
-    @pytest.mark.parametrize("c", [-1, 0, 1, np.asarray([-2.1, -1., 0., 1., 2.1])])
+    @pytest.mark.parametrize("c", [-1, 0, 1, list(np.asarray([-2.1, -1., 0., 1., 2.1]))])
     def test_custom_variable_support(self, c):
         rng = np.random.default_rng(7548723590230982)
 
@@ -1353,8 +1353,8 @@ class TestMakeDistribution:
         assert_allclose(X1.iccdf(p), X2.iccdf(p))
 
     @pytest.mark.slow
-    @pytest.mark.parametrize("a", [0.5, np.asarray([0.5, 1.0, 2.0, 4.0, 8.0])])
-    @pytest.mark.parametrize("b", [0.5, np.asarray([0.5, 1.0, 2.0, 4.0, 8.0])])
+    @pytest.mark.parametrize("a", [0.5, list(np.asarray([0.5, 1.0, 2.0, 4.0, 8.0]))])
+    @pytest.mark.parametrize("b", [0.5, list(np.asarray([0.5, 1.0, 2.0, 4.0, 8.0]))])
     def test_custom_multiple_parameterizations(self, a, b):
         rng = np.random.default_rng(7548723590230982)
         class MyBeta:

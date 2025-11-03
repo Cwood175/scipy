@@ -346,10 +346,10 @@ def nan_policy_1d(hypotest, data1d, unpacker, *args, n_outputs=2,
 @pytest.mark.filterwarnings('ignore:divide by zero encountered:RuntimeWarning')
 
 @pytest.mark.parametrize(("hypotest", "args", "kwds", "n_samples", "n_outputs",
-                          "paired", "unpacker"), axis_nan_policy_cases)
-@pytest.mark.parametrize(("nan_policy"), ("propagate", "omit", "raise"))
-@pytest.mark.parametrize(("axis"), (1,))
-@pytest.mark.parametrize(("data_generator"), ("mixed",))
+                          "paired", "unpacker"), list(axis_nan_policy_cases))
+@pytest.mark.parametrize(("nan_policy"), ["propagate", "omit", "raise"])
+@pytest.mark.parametrize(("axis"), [1])
+@pytest.mark.parametrize(("data_generator"), ["mixed"])
 def test_axis_nan_policy_fast(hypotest, args, kwds, n_samples, n_outputs,
                               paired, unpacker, nan_policy, axis,
                               data_generator):
@@ -383,11 +383,11 @@ if SCIPY_XSLOW:
     @pytest.mark.filterwarnings('ignore:divide by zero encountered:RuntimeWarning')
 
     @pytest.mark.parametrize(("hypotest", "args", "kwds", "n_samples", "n_outputs",
-                              "paired", "unpacker"), axis_nan_policy_cases)
-    @pytest.mark.parametrize(("nan_policy"), ("propagate", "omit", "raise"))
-    @pytest.mark.parametrize(("axis"), range(-3, 3))
+                              "paired", "unpacker"), list(axis_nan_policy_cases))
+    @pytest.mark.parametrize(("nan_policy"), ["propagate", "omit", "raise"])
+    @pytest.mark.parametrize(("axis"), list(range(-3, 3)))
     @pytest.mark.parametrize(("data_generator"),
-                             ("all_nans", "all_finite", "mixed"))
+                             ["all_nans", "all_finite", "mixed"])
     def test_axis_nan_policy_full(hypotest, args, kwds, n_samples, n_outputs,
                                   paired, unpacker, nan_policy, axis,
                                   data_generator):
@@ -973,7 +973,7 @@ def paired_non_broadcastable_cases():
 @pytest.mark.parametrize("axis", [0, 1])
 @pytest.mark.parametrize(("hypotest", "args", "kwds", "n_samples", "n_outputs",
                           "paired", "unpacker"),
-                         paired_non_broadcastable_cases())
+                         list(paired_non_broadcastable_cases()))
 def test_non_broadcastable(hypotest, args, kwds, n_samples, n_outputs, paired,
                            unpacker, axis):
     # test for correct error message when shapes are not broadcastable
