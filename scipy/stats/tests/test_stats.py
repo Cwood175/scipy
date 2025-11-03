@@ -1849,8 +1849,7 @@ class TestKendallTauAlternative:
         res_expected = stat_expected, p_expected
         assert_allclose(res, res_expected)
 
-    case_R_n1 = (list(zip(alternatives, p_n1, [False]*3))
-                 + list(zip(alternatives, reversed(p_n1), [True]*3)))
+    case_R_n1 = list(zip(alternatives, p_n1, [False]*3)) + list(zip(alternatives, reversed(p_n1), [True]*3))
 
     @pytest.mark.parametrize("alternative, p_expected, rev", case_R_n1)
     def test_against_R_n1(self, alternative, p_expected, rev):
@@ -1859,8 +1858,7 @@ class TestKendallTauAlternative:
         with pytest.warns(SmallSampleWarning, match="One or more sample..."):
             self.exact_test(x, y, alternative, rev, stat_expected, p_expected)
 
-    case_R_n2 = (list(zip(alternatives, p_n2, [False]*3))
-                 + list(zip(alternatives, reversed(p_n2), [True]*3)))
+    case_R_n2 = list(zip(alternatives, p_n2, [False]*3)) + list(zip(alternatives, reversed(p_n2), [True]*3))
 
     @pytest.mark.parametrize("alternative, p_expected, rev", case_R_n2)
     def test_against_R_n2(self, alternative, p_expected, rev):
@@ -1868,8 +1866,7 @@ class TestKendallTauAlternative:
         stat_expected = 0.9999999999999998
         self.exact_test(x, y, alternative, rev, stat_expected, p_expected)
 
-    case_R_c0 = (list(zip(alternatives, p_c0, [False]*3))
-                 + list(zip(alternatives, reversed(p_c0), [True]*3)))
+    case_R_c0 = list(zip(alternatives, p_c0, [False]*3)) + list(zip(alternatives, reversed(p_c0), [True]*3))
 
     @pytest.mark.parametrize("alternative, p_expected, rev", case_R_c0)
     def test_against_R_c0(self, alternative, p_expected, rev):
@@ -1877,8 +1874,7 @@ class TestKendallTauAlternative:
         stat_expected = 1
         self.exact_test(x, y, alternative, rev, stat_expected, p_expected)
 
-    case_R_c1 = (list(zip(alternatives, p_c1, [False]*3))
-                 + list(zip(alternatives, reversed(p_c1), [True]*3)))
+    case_R_c1 = list(zip(alternatives, p_c1, [False]*3)) + list(zip(alternatives, reversed(p_c1), [True]*3))
 
     @pytest.mark.parametrize("alternative, p_expected, rev", case_R_c1)
     def test_against_R_c1(self, alternative, p_expected, rev):
@@ -1886,9 +1882,7 @@ class TestKendallTauAlternative:
         stat_expected = 0.6666666666666667
         self.exact_test(x, y, alternative, rev, stat_expected, p_expected)
 
-    case_R_no_corr = (list(zip(alternatives, p_no_correlation, [False]*3))
-                      + list(zip(alternatives, reversed(p_no_correlation),
-                                 [True]*3)))
+    case_R_no_corr = list(zip(alternatives, p_no_correlation, [False]*3)) + list(zip(alternatives, reversed(p_no_correlation), [True]*3))
 
     @pytest.mark.parametrize("alternative, p_expected, rev", case_R_no_corr)
     def test_against_R_no_correlation(self, alternative, p_expected, rev):
@@ -1896,9 +1890,7 @@ class TestKendallTauAlternative:
         stat_expected = 0
         self.exact_test(x, y, alternative, rev, stat_expected, p_expected)
 
-    case_no_cor_b = (list(zip(alternatives, p_no_correlationb, [False]*3))
-                     + list(zip(alternatives, reversed(p_no_correlationb),
-                                [True]*3)))
+    case_no_cor_b = list(zip(alternatives, p_no_correlationb, [False]*3)) + list(zip(alternatives, reversed(p_no_correlationb), [True]*3))
 
     @pytest.mark.parametrize("alternative, p_expected, rev", case_no_cor_b)
     def test_against_R_no_correlationb(self, alternative, p_expected, rev):
@@ -1906,8 +1898,7 @@ class TestKendallTauAlternative:
         stat_expected = 0
         self.exact_test(x, y, alternative, rev, stat_expected, p_expected)
 
-    case_R_lt_171 = (list(zip(alternatives, p_n_lt_171, [False]*3))
-                     + list(zip(alternatives, reversed(p_n_lt_171), [True]*3)))
+    case_R_lt_171 = list(zip(alternatives, p_n_lt_171, [False]*3)) + list(zip(alternatives, reversed(p_n_lt_171), [True]*3))
 
     @pytest.mark.parametrize("alternative, p_expected, rev", case_R_lt_171)
     def test_against_R_lt_171(self, alternative, p_expected, rev):
@@ -1918,9 +1909,7 @@ class TestKendallTauAlternative:
         stat_expected = 0.4444444444444445
         self.exact_test(x, y, alternative, rev, stat_expected, p_expected)
 
-    case_R_lt_171b = (list(zip(alternatives, p_n_lt_171b, [False]*3))
-                      + list(zip(alternatives, reversed(p_n_lt_171b),
-                                 [True]*3)))
+    case_R_lt_171b = list(zip(alternatives, p_n_lt_171b, [False]*3)) + list(zip(alternatives, reversed(p_n_lt_171b), [True]*3))
 
     @pytest.mark.parametrize("alternative, p_expected, rev", case_R_lt_171b)
     def test_against_R_lt_171b(self, alternative, p_expected, rev):
@@ -1930,9 +1919,7 @@ class TestKendallTauAlternative:
         stat_expected = -0.04686868686868687
         self.exact_test(x, y, alternative, rev, stat_expected, p_expected)
 
-    case_R_lt_171c = (list(zip(alternatives, p_n_lt_171c, [False]*3))
-                      + list(zip(alternatives, reversed(p_n_lt_171c),
-                                 [True]*3)))
+    case_R_lt_171c = list(zip(alternatives, p_n_lt_171c, [False]*3)) + list(zip(alternatives, reversed(p_n_lt_171c), [True]*3))
 
     @pytest.mark.parametrize("alternative, p_expected, rev", case_R_lt_171c)
     def test_against_R_lt_171c(self, alternative, p_expected, rev):
@@ -1942,8 +1929,7 @@ class TestKendallTauAlternative:
         stat_expected = 0.1115906717716673
         self.exact_test(x, y, alternative, rev, stat_expected, p_expected)
 
-    case_gt_171 = (list(zip(alternatives, [False]*3)) +
-                   list(zip(alternatives, [True]*3)))
+    case_gt_171 = list(zip(alternatives, [False]*3)) + list(zip(alternatives, [True]*3))
 
     @pytest.mark.parametrize("alternative, rev", case_gt_171)
     def test_gt_171(self, alternative, rev):
@@ -3540,7 +3526,7 @@ class TestMoments:
     testcase_moment_accuracy = rng.random(42)
 
     @pytest.mark.parametrize('size', [10, (10, 2)])
-    @pytest.mark.parametrize('m, c', product((0, 1, 2, 3), (None, 0, 1)))
+    @pytest.mark.parametrize('m, c', list(product((0, 1, 2, 3), (None, 0, 1))))
     @pytest.mark.filterwarnings(
         "ignore:divide by zero encountered in divide:RuntimeWarning:dask"
     )

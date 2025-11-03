@@ -1181,6 +1181,8 @@ def mood_cases_with_ties():
         x, y = np.split(xy, 2)
         yield x, y, 'less', *expected_results[si]
 
+mood_cases_with_ties = list(mood_cases_with_ties())
+
 
 class TestMood:
     @pytest.mark.parametrize("x,y,alternative,stat_expect,p_expect",

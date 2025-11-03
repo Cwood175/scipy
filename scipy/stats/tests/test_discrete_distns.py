@@ -147,7 +147,7 @@ def test_betabinom_a_and_b_unity():
     assert_almost_equal(p, expected)
 
 
-@pytest.mark.parametrize('dtypes', itertools.product(*[(int, float)]*3))
+@pytest.mark.parametrize('dtypes', list(itertools.product(*[(int, float)]*3)))
 def test_betabinom_stats_a_and_b_integers_gh18026(dtypes):
     # gh-18026 reported that `betabinom` kurtosis calculation fails when some
     # parameters are integers. Check that this is resolved.

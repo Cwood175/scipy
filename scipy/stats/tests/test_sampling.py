@@ -504,7 +504,7 @@ class TestTransformedDensityRejection:
     mvs = [mv0, mv1, mv2, mv3]
 
     @pytest.mark.parametrize("dist, mv_ex",
-                             zip(dists, mvs))
+                             list(zip(dists, mvs)))
     @pytest.mark.thread_unsafe(reason="deadlocks for unknown reasons")
     def test_basic(self, dist, mv_ex):
         with warnings.catch_warnings():
@@ -642,7 +642,7 @@ class TestDiscreteAliasUrn:
         'randint'  # fails on 32-bit ubuntu
     }
 
-    @pytest.mark.parametrize("distname, params", distdiscrete)
+    @pytest.mark.parametrize("distname, params", list(distdiscrete))
     def test_basic(self, distname, params):
         if distname in self.basic_fail_dists:
             msg = ("DAU fails on these probably because of large domains "
@@ -814,13 +814,13 @@ class TestNumericalInversePolynomial:
 
     @pytest.mark.thread_unsafe(reason="deadlocks for unknown reasons")
     @pytest.mark.parametrize("dist, mv_ex",
-                             zip(dists, mvs))
+                             list(zip(dists, mvs)))
     def test_basic(self, dist, mv_ex):
         rng = NumericalInversePolynomial(dist, random_state=42)
         check_cont_samples(rng, dist, mv_ex)
 
     @pytest.mark.xslow
-    @pytest.mark.parametrize("distname, params", distcont)
+    @pytest.mark.parametrize("distname, params", list(distcont))
     def test_basic_all_scipy_dists(self, distname, params):
 
         very_slow_dists = ['anglit', 'gausshyper', 'kappa4',
@@ -1065,7 +1065,7 @@ class TestNumericalInverseHermite:
     mvs = [mv0, mv1]
 
     @pytest.mark.parametrize("dist, mv_ex",
-                             zip(dists, mvs))
+                             list(zip(dists, mvs)))
     @pytest.mark.parametrize("order", [3, 5])
     @pytest.mark.thread_unsafe
     def test_basic(self, dist, mv_ex, order):
@@ -1106,7 +1106,7 @@ class TestNumericalInverseHermite:
 
     @pytest.mark.filterwarnings('ignore::RuntimeWarning')
     @pytest.mark.xslow
-    @pytest.mark.parametrize(("distname", "shapes"), distcont)
+    @pytest.mark.parametrize(("distname", "shapes"), list(distcont))
     def test_basic_all_scipy_dists(self, distname, shapes):
         # if distname == "truncnorm":
         #     pytest.skip("Tested separately")
@@ -1357,7 +1357,7 @@ class TestSimpleRatioUniforms:
     mvs = [mv1, mv2]
 
     @pytest.mark.parametrize("dist, mv_ex",
-                             zip(dists, mvs))
+                             list(zip(dists, mvs)))
     @pytest.mark.thread_unsafe
     def test_basic(self, dist, mv_ex):
         rng = SimpleRatioUniforms(dist, mode=dist.mode, random_state=42)

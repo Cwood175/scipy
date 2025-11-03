@@ -107,11 +107,11 @@ class RunAll64Bit:
 class Test64BitArray(RunAll64Bit):
     # inheritance of pytest test classes does not separate marks for subclasses.
     # So we define these functions in both Array and Matrix versions.
-    @pytest.mark.parametrize('cls,method_name', cases_64bit("sparray"))
+    @pytest.mark.parametrize('cls,method_name', list(cases_64bit("sparray")))
     def test_resiliency_limit_10(self, cls, method_name):
         self._check_resiliency(cls, method_name, maxval_limit=10)
 
-    @pytest.mark.parametrize('cls,method_name', cases_64bit("sparray"))
+    @pytest.mark.parametrize('cls,method_name', list(cases_64bit("sparray")))
     def test_resiliency_all_32(self, cls, method_name):
         self._check_resiliency(cls, method_name, fixed_dtype=np.int32)
 

@@ -346,7 +346,7 @@ def nan_policy_1d(hypotest, data1d, unpacker, *args, n_outputs=2,
 @pytest.mark.filterwarnings('ignore:divide by zero encountered:RuntimeWarning')
 
 @pytest.mark.parametrize(("hypotest", "args", "kwds", "n_samples", "n_outputs",
-                          "paired", "unpacker"), axis_nan_policy_cases)
+                          "paired", "unpacker"), list(axis_nan_policy_cases))
 @pytest.mark.parametrize(("nan_policy"), ("propagate", "omit", "raise"))
 @pytest.mark.parametrize(("axis"), (1,))
 @pytest.mark.parametrize(("data_generator"), ("mixed",))
@@ -383,7 +383,7 @@ if SCIPY_XSLOW:
     @pytest.mark.filterwarnings('ignore:divide by zero encountered:RuntimeWarning')
 
     @pytest.mark.parametrize(("hypotest", "args", "kwds", "n_samples", "n_outputs",
-                              "paired", "unpacker"), axis_nan_policy_cases)
+                              "paired", "unpacker"), list(axis_nan_policy_cases))
     @pytest.mark.parametrize(("nan_policy"), ("propagate", "omit", "raise"))
     @pytest.mark.parametrize(("axis"), range(-3, 3))
     @pytest.mark.parametrize(("data_generator"),
@@ -531,7 +531,7 @@ def skip_nan_unexpected_exception():
         pytest.skip(f"nan raises unexpected {e.__class__.__name__} in numpy")
 
 @pytest.mark.parametrize(("hypotest", "args", "kwds", "n_samples", "n_outputs",
-                          "paired", "unpacker"), axis_nan_policy_cases)
+                          "paired", "unpacker"), list(axis_nan_policy_cases))
 @pytest.mark.parametrize(("nan_policy"), ("propagate", "omit", "raise"))
 @pytest.mark.parametrize(("data_generator"),
                          ("all_nans", "all_finite", "mixed", "empty"))
@@ -664,7 +664,7 @@ def test_axis_nan_policy_axis_is_None(hypotest, args, kwds, n_samples,
 @pytest.mark.filterwarnings('ignore::RuntimeWarning')
 @pytest.mark.parametrize("nan_policy", ("omit", "propagate"))
 @pytest.mark.parametrize(("hypotest", "args", "kwds", "n_samples", "n_outputs",
-                          "paired", "unpacker"), axis_nan_policy_cases)
+                          "paired", "unpacker"), list(axis_nan_policy_cases))
 @pytest.mark.parametrize(
     ("sample_shape", "axis_cases"),
     (((2, 3, 3, 4), (None, 0, -1, (0, 2), (1, -1), (3, 1, 2, 0))),
@@ -972,7 +972,7 @@ def paired_non_broadcastable_cases():
 
 @pytest.mark.parametrize("axis", [0, 1])
 @pytest.mark.parametrize(("hypotest", "args", "kwds", "n_samples", "n_outputs",
-                          "paired", "unpacker"),
+                          "paired", "unpacker"), list(paired_non_broadcastable_cases()),
                          paired_non_broadcastable_cases())
 def test_non_broadcastable(hypotest, args, kwds, n_samples, n_outputs, paired,
                            unpacker, axis):
@@ -1282,7 +1282,7 @@ def test_axis_None_vs_tuple_with_broadcasting():
 
 
 @pytest.mark.parametrize(("axis"),
-                         list(permutations(range(-3, 3), 2)) + [(-4, 1)])
+                         tuple(permutations(range(-3, 3), 2)) + ((-4, 1),))
 def test_other_axis_tuples(axis):
     # Check that _axis_nan_policy_factory treats all `axis` tuples as expected
     rng = np.random.default_rng(0)

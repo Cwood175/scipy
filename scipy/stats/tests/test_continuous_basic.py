@@ -121,7 +121,7 @@ def cases_test_cont_basic():
             yield distname, arg
 
 
-@pytest.mark.parametrize('distname,arg', cases_test_cont_basic())
+@pytest.mark.parametrize('distname,arg', list(cases_test_cont_basic()))
 @pytest.mark.parametrize('sn', [500])
 def test_cont_basic(distname, arg, sn, num_parallel_threads):
     try:
@@ -258,7 +258,7 @@ def test_cont_basic_fit_cases():
 
 
 @pytest.mark.parametrize('distname, arg, method, fix_args',
-                         cases_test_cont_basic_fit())
+                         list(cases_test_cont_basic_fit()))
 @pytest.mark.parametrize('n_fit_samples', [200])
 def test_cont_basic_fit(distname, arg, n_fit_samples, method, fix_args):
     try:
@@ -335,7 +335,7 @@ def cases_test_moments():
 @pytest.mark.slow
 @pytest.mark.parametrize('distname,arg,normalization_ok,higher_ok,moment_ok,'
                          'is_xfailing',
-                         cases_test_moments())
+                         list(cases_test_moments()))
 def test_moments(distname, arg, normalization_ok, higher_ok, moment_ok,
                  is_xfailing):
     try:
